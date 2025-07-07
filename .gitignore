@@ -1,0 +1,52 @@
+# Node modules
+node_modules/
+
+# Vite build output
+dist/
+
+# Vite cache
+.vite/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Diagnostic reports (Node.js)
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Env files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor folders
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# TypeScript build cache
+*.tsbuildinfo
+
+# Optional: macOS and system files
+*.swp
+
+# Optional: Local coverage reports
+coverage/
+
+# Optional: Storybook build output
+storybook-static/
+
+# Optional: VS Code launch configurations
+.vscode/launch.json
+
+# Optional: Vercel local and deploy config caches
+.vercel/output/
