@@ -18,7 +18,8 @@ export function useMonitorSocket({ organizationId, onMonitorUpdate }: UseMonitor
 
     const connect = () => {
       // console.log('[WS] Attempting to connect with organizationId:', organizationId)
-      const ws = new WebSocket(`ws://localhost:8001/ws/monitors/${organizationId}`)
+      const ws = new WebSocket(`${import.meta.env.VITE_MONITOR_WS_URL}/${organizationId}`)
+
       wsRef.current = ws
 
       ws.onopen = () => {

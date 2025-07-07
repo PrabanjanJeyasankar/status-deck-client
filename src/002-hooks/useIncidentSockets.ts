@@ -17,7 +17,7 @@ interface UseIncidentSocketOptions {
 
 export function useIncidentSocket({ organizationId, incidents, onIncidentUpdate }: UseIncidentSocketOptions) {
   useEffect(() => {
-    const ws = new WebSocket(`ws://localhost:8000/ws/incidents/${organizationId}`)
+    const ws = new WebSocket(`${import.meta.env.VITE_INCIDENT_WS_URL}/${organizationId}`)
 
     // ws.onopen = () => console.log(`[Incident WS] Connected for org ${organizationId}`)
 
