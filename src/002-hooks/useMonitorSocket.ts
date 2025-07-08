@@ -1,3 +1,5 @@
+// File: hooks/useMonitorSocket.ts
+
 import { useEffect, useRef } from 'react'
 import type { MonitorWithLatestResult } from '@/types/monitorTypes'
 
@@ -6,6 +8,11 @@ interface UseMonitorSocketOptions {
   onMonitorUpdate: (monitor: MonitorWithLatestResult) => void
 }
 
+/**
+ * Establishes and maintains a WebSocket connection for monitor updates per organization.
+ * Handles reconnects with exponential backoff.
+ * Automatically cleans up on component unmount or organizationId change.
+ */
 export function useMonitorSocket({ organizationId, onMonitorUpdate }: UseMonitorSocketOptions) {
   const wsRef = useRef<WebSocket | null>(null)
   const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -17,13 +24,12 @@ export function useMonitorSocket({ organizationId, onMonitorUpdate }: UseMonitor
     let isUnmounted = false
 
     const connect = () => {
-      // console.log('[WS] Attempting to connect with organizationId:', organizationId)
+      console.log('[WS] Connecting to monitor updates for organization:', organizationId)
       const ws = new WebSocket(`${import.meta.env.VITE_MONITOR_WS_URL}/${organizationId}`)
-
       wsRef.current = ws
 
       ws.onopen = () => {
-        // console.log('[WS] Connected for monitor updates')
+        console.log('[WS] Connection established for organization:', organizationId)
         reconnectAttempts = 0
       }
 
@@ -31,27 +37,26 @@ export function useMonitorSocket({ organizationId, onMonitorUpdate }: UseMonitor
         try {
           const data = JSON.parse(event.data)
           if (data.type === 'monitor_update' && data.payload.latestResult?.responseTimeMs !== null) {
-            // console.log('[WS] Monitor update received:', data.payload.latestResult?.responseTimeMs)
             onMonitorUpdate(data.payload)
           } else {
-            // console.log('[WS] Ignored message (null payload or non-update type):', data)
+            console.log('[WS] Ignored non-update or empty message:', data)
           }
         } catch (error) {
-          console.error('[WS] Error parsing message:', error)
+          console.error('[WS] Failed to parse incoming message:', error)
         }
       }
 
       ws.onclose = () => {
-        // console.log('[WS] Connection closed')
+        console.log('[WS] Connection closed for organization:', organizationId)
         if (isUnmounted) return
         reconnectAttempts += 1
         const delay = Math.min(1000 * 2 ** reconnectAttempts, 10000) // max 10s
-        // console.log(`[WS] Reconnecting in ${delay / 1000}s...`)
+        console.log(`[WS] Attempting reconnect in ${delay / 1000}s (attempt ${reconnectAttempts})`)
         reconnectTimeoutRef.current = setTimeout(connect, delay)
       }
 
       ws.onerror = (error) => {
-        console.error('[WS] Error:', error)
+        console.error('[WS] Error encountered, closing socket:', error)
         ws.close()
       }
     }
@@ -59,8 +64,11 @@ export function useMonitorSocket({ organizationId, onMonitorUpdate }: UseMonitor
     connect()
 
     return () => {
+      console.log('[WS] Cleaning up WebSocket for organization:', organizationId)
       isUnmounted = true
-      wsRef.current?.close()
+      if (wsRef.current && wsRef.current.readyState <= 1) {
+        wsRef.current.close()
+      }
       if (reconnectTimeoutRef.current) {
         clearTimeout(reconnectTimeoutRef.current)
       }
