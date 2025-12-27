@@ -17,7 +17,7 @@ export function LoadingScreen({
         'flex flex-col items-center justify-center min-h-screen text-muted-foreground',
         className
       )}>
-      <Loader className='w-8 h-8 animate-spin mb-4' />
+      <Loader className='w-5 h-5 animate-spin mb-4' />
       <span>{message}</span>
 
       <div className='flex flex-col items-center gap-1 mt-12'>
