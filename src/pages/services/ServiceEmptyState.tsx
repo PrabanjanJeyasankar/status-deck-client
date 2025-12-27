@@ -1,4 +1,4 @@
-import Server from '@/assets/svg/server'
+import Server from '@/assets/svg/Server'
 import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
 

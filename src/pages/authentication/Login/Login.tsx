@@ -4,7 +4,7 @@ import { LoginForm } from '@/pages/authentication/Login/login-form'
 
 export default function Login() {
   return (
-    <div className='relative bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10'>
+    <div className='relative flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10'>
       <div className='absolute right-4 top-4'>
         <ThemeToggle />
       </div>

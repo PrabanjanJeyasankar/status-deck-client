@@ -14,7 +14,7 @@ export const useIncidentsStore = create<IncidentsStore>()(
     incidents: [],
     fetchIncidents: async (organizationId) => {
       try {
-        const response = await fetch(`/api/incidents?organizationId=${organizationId}`)
+        const response = await fetch(`/api/v1/incidents?organizationId=${organizationId}`)
         if (!response.ok) {
           throw new Error('Failed to fetch incidents')
         }

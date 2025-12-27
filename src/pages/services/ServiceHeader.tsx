@@ -15,7 +15,7 @@ export function ServiceHeader({ serviceId }: ServiceHeaderProps) {
 
   useEffect(() => {
     setLoading(true)
-    fetch(`/api/services/${serviceId}`)
+    fetch(`/api/v1/services/${serviceId}`)
       .then((r) => r.json())
       .then((s: Service) => {
         setService(s)
