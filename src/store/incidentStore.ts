@@ -14,7 +14,9 @@ export const useIncidentsStore = create<IncidentsStore>()(
     incidents: [],
     fetchIncidents: async (organizationId) => {
       try {
-        const response = await fetch(`/api/v1/incidents?organizationId=${organizationId}`)
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/incidents?organizationId=${organizationId}`
+        )
         if (!response.ok) {
           throw new Error('Failed to fetch incidents')
         }

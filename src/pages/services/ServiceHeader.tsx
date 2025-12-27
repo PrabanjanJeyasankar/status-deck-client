@@ -15,7 +15,7 @@ export function ServiceHeader({ serviceId }: ServiceHeaderProps) {
 
   useEffect(() => {
     setLoading(true)
-    fetch(`/api/v1/services/${serviceId}`)
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/services/${serviceId}`)
       .then((r) => r.json())
       .then((s: Service) => {
         setService(s)
