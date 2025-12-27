@@ -1,16 +1,21 @@
-import { useCallback, useEffect, useState } from 'react'
-import { Activity, Plus } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { MonitorForm } from './MonitorForm'
-import { useAuthStore } from '@/store/authenticationStore'
-import { useMonitorSocket } from '@/002-hooks/useMonitorSocket'
-import type { MonitorWithLatestResult } from '@/types/monitorTypes'
-import { MonitorTable } from './MonitorsTable'
 import { getLatestMonitorResults } from '@/001-services/monitors'
+import { useMonitorSocket } from '@/002-hooks/useMonitorSocket'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { useAuthStore } from '@/store/authenticationStore'
+import type { MonitorWithLatestResult } from '@/types/monitorTypes'
+import { Activity, Plus } from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
+import { MonitorForm } from './MonitorForm'
+import { MonitorTable } from './MonitorsTable'
 
-import { useNavigate } from 'react-router-dom'
 import { useServices } from '@/002-hooks/useServices'
+import { useNavigate } from 'react-router-dom'
 
 export function MonitorPage() {
   const organizationId = useAuthStore((s) => s.user?.organization_id)!
@@ -21,7 +26,8 @@ export function MonitorPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [showCreateMonitor, setShowCreateMonitor] = useState(false)
 
-  const { data: services, isLoading: isLoadingServices } = useServices(organizationId)
+  const { data: services, isLoading: isLoadingServices } =
+    useServices(organizationId)
   const navigate = useNavigate()
 
   const fetchMonitors = async () => {
@@ -40,22 +46,25 @@ export function MonitorPage() {
     fetchMonitors()
   }, [organizationId])
 
-  const handleMonitorUpdate = useCallback((updatedMonitor: MonitorWithLatestResult) => {
-    setMonitors((prev) => {
-      const index = prev.findIndex((m) => m.id === updatedMonitor.id)
-      if (index !== -1) {
-        const newData = structuredClone(prev)
-        newData[index] = {
-          ...newData[index],
-          ...updatedMonitor,
-          latestResult: updatedMonitor.latestResult ?? null,
+  const handleMonitorUpdate = useCallback(
+    (updatedMonitor: MonitorWithLatestResult) => {
+      setMonitors((prev) => {
+        const index = prev.findIndex((m) => m.id === updatedMonitor.id)
+        if (index !== -1) {
+          const newData = structuredClone(prev)
+          newData[index] = {
+            ...newData[index],
+            ...updatedMonitor,
+            latestResult: updatedMonitor.latestResult ?? null,
+          }
+          return newData
+        } else {
+          return [updatedMonitor, ...prev]
         }
-        return newData
-      } else {
-        return [updatedMonitor, ...prev]
-      }
-    })
-  }, [])
+      })
+    },
+    []
+  )
 
   useMonitorSocket({
     organizationId,
@@ -68,7 +77,8 @@ export function MonitorPage() {
         <Activity className='h-10 w-10 text-muted-foreground mb-4' />
         <h2 className='text-2xl font-semibold mb-2'>No Services Found</h2>
         <p className='text-muted-foreground mb-4 max-w-md'>
-          You need to create a service before you can add monitors and start tracking uptime and health.
+          You need to create a service before you can add monitors and start
+          tracking uptime and health.
         </p>
         <Button onClick={() => navigate('/services')}>Create Service</Button>
       </div>
@@ -76,14 +86,16 @@ export function MonitorPage() {
   }
 
   return (
-    <div className='max-w-6xl p-8'>
+    <div className='w-full p-8 dark:bg-gray-900 dark:border-gray-700 rounded-none'>
       <div className='flex items-center justify-between mb-6'>
         <div>
           <h1 className='text-3xl font-bold tracking-tight flex items-center gap-2'>
             <Activity className='w-7 h-7 text-muted-foreground' />
             All Monitors
           </h1>
-          <p className='text-muted-foreground mt-1'>Uptime, status, and health checks for all services.</p>
+          <p className='text-muted-foreground mt-1'>
+            Uptime, status, and health checks for all services.
+          </p>
         </div>
         {isAdmin && (
           <Button onClick={() => setShowCreateMonitor(true)}>

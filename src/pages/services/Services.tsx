@@ -1,21 +1,36 @@
-import { useSearchParams } from 'react-router-dom'
-import { useCallback, useEffect, useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { ServiceEmptyState } from './ServiceEmptyState'
-import { ServiceCreateForm } from './ServiceCreateForm'
-import { ServiceList } from './ServiceList'
-import { useAuthStore } from '@/store/authenticationStore'
-import { useCreateService, useServices } from '@/002-hooks/useServices'
+import { getLatestMonitorResults } from '@/001-services/monitors'
 import { useMonitorSocket } from '@/002-hooks/useMonitorSocket'
+import { useCreateService, useServices } from '@/002-hooks/useServices'
+import { LoadingScreen } from '@/components/LoadingScreen'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { useAuthStore } from '@/store/authenticationStore'
+import type { MonitorWithLatestResult } from '@/types/monitorTypes'
 import type { ServiceStatus } from '@/types/serviceTypes'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import {
+  AlignLeft,
+  Building2,
+  CalendarDays,
+  Clock,
+  Hash,
+  Mailbox,
+  Plus,
+  Server,
+  Signal,
+} from 'lucide-react'
+import { useCallback, useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { MonitorForm } from '../monitor/MonitorForm'
 import { MonitorTable } from '../monitor/MonitorsTable'
-import { AlignLeft, Building2, CalendarDays, Clock, Hash, Mailbox, Plus, Server, Signal } from 'lucide-react'
+import { ServiceCreateForm } from './ServiceCreateForm'
+import { ServiceEmptyState } from './ServiceEmptyState'
 import { DetailRow } from './ServiceItem'
-import type { MonitorWithLatestResult } from '@/types/monitorTypes'
-import { getLatestMonitorResults } from '@/001-services/monitors'
-import { LoadingScreen } from '@/components/LoadingScreen'
+import { ServiceList } from './ServiceList'
 
 export function Services() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -49,24 +64,37 @@ export function Services() {
     fetchMonitors()
   }, [organizationId])
 
-  const handleMonitorUpdate = useCallback((updatedMonitor: MonitorWithLatestResult) => {
-    setMonitors((prev) => {
-      const index = prev.findIndex((m) => m.id === updatedMonitor.id)
-      if (index !== -1) {
-        const newData = structuredClone(prev)
-        newData[index] = { ...newData[index], ...updatedMonitor, latestResult: updatedMonitor.latestResult ?? null }
-        return newData
-      } else {
-        return [updatedMonitor, ...prev]
-      }
-    })
-  }, [])
+  const handleMonitorUpdate = useCallback(
+    (updatedMonitor: MonitorWithLatestResult) => {
+      setMonitors((prev) => {
+        const index = prev.findIndex((m) => m.id === updatedMonitor.id)
+        if (index !== -1) {
+          const newData = structuredClone(prev)
+          newData[index] = {
+            ...newData[index],
+            ...updatedMonitor,
+            latestResult: updatedMonitor.latestResult ?? null,
+          }
+          return newData
+        } else {
+          return [updatedMonitor, ...prev]
+        }
+      })
+    },
+    []
+  )
 
   useMonitorSocket({ organizationId, onMonitorUpdate: handleMonitorUpdate })
 
-  const serviceMonitors = monitors.filter((monitor) => monitor.serviceId === serviceId)
+  const serviceMonitors = monitors.filter(
+    (monitor) => monitor.serviceId === serviceId
+  )
 
-  const handleCreate = (data: { name: string; status: ServiceStatus; description?: string }) => {
+  const handleCreate = (data: {
+    name: string
+    status: ServiceStatus
+    description?: string
+  }) => {
     createServiceMutation.mutate({ ...data, organizationId })
   }
 
@@ -78,12 +106,14 @@ export function Services() {
     return isAdmin ? (
       <ServiceEmptyState onCreate={() => setShowCreate(true)} />
     ) : (
-      <div className='text-center text-muted-foreground py-10'>No services available.</div>
+      <div className='text-center text-muted-foreground py-10'>
+        No services available.
+      </div>
     )
   }
 
   return (
-    <div className='max-w-6xl mx-auto py-8 px-4'>
+    <div className=' mx-auto py-8 px-4'>
       {serviceId ? (
         <>
           <Button variant='secondary' onClick={() => setSearchParams({})}>
@@ -97,14 +127,16 @@ export function Services() {
                 .map((svc) => (
                   <div
                     key={svc.id}
-                    className='rounded-2xl border bg-white dark:bg-zinc-950 p-6 shadow-sm flex flex-col gap-4'>
+                    className='rounded-none border dark:bg-zinc-950 p-6 shadow-sm flex flex-col gap-4'>
                     <div className='flex justify-between items-start'>
                       <div className='flex items-center gap-3 min-w-0'>
                         <Server className='w-6 h-6 text-primary shrink-0' />
-                        <h2 className='text-xl font-semibold truncate'>{svc.name}</h2>
+                        <h2 className='text-xl font-semibold truncate'>
+                          {svc.name}
+                        </h2>
                       </div>
                       <div
-                        className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                        className={`px-2 py-0.5 rounded-none text-xs font-medium ${
                           svc.status === 'OPERATIONAL'
                             ? 'bg-green-100 text-green-800'
                             : svc.status === 'DEGRADED'
@@ -122,8 +154,10 @@ export function Services() {
 
                     {svc.description && (
                       <div className='flex items-start gap-2 text-sm text-muted-foreground'>
-                        <AlignLeft className='w-4 h-4 mt-0.5 flex-shrink-0' />
-                        <p className='line-clamp-3 break-words'>{svc.description}</p>
+                        <AlignLeft className='w-4 h-4 mt-0.5 shrink-0' />
+                        <p className='line-clamp-3 wrap-break-word'>
+                          {svc.description}
+                        </p>
                       </div>
                     )}
 
@@ -146,7 +180,11 @@ export function Services() {
                       <DetailRow
                         icon={<Clock className='w-4 h-4' />}
                         label='Updated'
-                        value={svc.updatedAt ? new Date(svc.updatedAt).toLocaleDateString() : 'Not available'}
+                        value={
+                          svc.updatedAt
+                            ? new Date(svc.updatedAt).toLocaleDateString()
+                            : 'Not available'
+                        }
                       />
                     </div>
                   </div>
@@ -193,7 +231,9 @@ export function Services() {
               <h1 className='text-3xl flex items-center gap-2 font-bold tracking-tight'>
                 <Mailbox className='h-8 w-8 text-muted-foreground' /> Services
               </h1>
-              <p className='text-muted-foreground mt-1'>View and manage your services.</p>
+              <p className='text-muted-foreground mt-1'>
+                View and manage your services.
+              </p>
             </div>
             {isAdmin && (
               <Button onClick={() => setShowCreate(true)} size='lg'>
@@ -204,7 +244,10 @@ export function Services() {
 
           {isAdmin && showCreate && (
             <div className='mb-6'>
-              <ServiceCreateForm onCreate={handleCreate} onCancel={() => setShowCreate(false)} />
+              <ServiceCreateForm
+                onCreate={handleCreate}
+                onCancel={() => setShowCreate(false)}
+              />
             </div>
           )}
 

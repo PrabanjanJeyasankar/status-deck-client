@@ -1,3 +1,4 @@
+import { Logo } from '@/components/Logo'
 import {
   Sidebar,
   SidebarContent,
@@ -11,12 +12,11 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar'
 import { useAuthStore } from '@/store/authenticationStore'
-import { Link, useLocation } from 'react-router-dom'
-import { Activity, Mailbox, Siren } from 'lucide-react'
-import { Logo } from '@/components/Logo'
-import { SidebarFooter } from './SidebarFooter'
 import { useIncidentNotificationStore } from '@/store/incidentNotificationStore'
+import { Activity, Mailbox, Siren } from 'lucide-react'
 import { useEffect } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { SidebarFooter } from './SidebarFooter'
 
 const navMain = [
   {
@@ -48,7 +48,9 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
             <Logo size={10} />
           </div>
           <div className='flex flex-col gap-1 justify-center'>
-            <span className='font-bold text-xl tracking-tight leading-none'>Status Deck</span>
+            <span className='font-bold text-xl tracking-tight leading-none'>
+              Status Deck
+            </span>
             {user?.organization_name && (
               <span
                 className='text-xs ml-0.5 text-muted-foreground font-mono truncate max-w-[140px]'
@@ -72,7 +74,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
                         <item.icon size={18} className='shrink-0' />
                         {item.title}
                         {item.key === 'incidents' && hasNewIncident && (
-                          <span className='absolute top-2 left-24 block h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse'></span>
+                          <span className='absolute top-2 left-24 block h-1.5 w-1.5 rounded-none bg-red-500 animate-pulse'></span>
                         )}
                       </Link>
                     </SidebarMenuButton>

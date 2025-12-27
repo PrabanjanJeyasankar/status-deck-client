@@ -1,6 +1,10 @@
-import { Outlet } from 'react-router-dom'
-import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from '@/components/ui/sidebar'
 import { AppSidebar } from '@/pages/services/AppSidebar'
+import { Outlet } from 'react-router-dom'
 import type { JSX } from 'react/jsx-runtime'
 
 export function Layout(): JSX.Element {
@@ -14,7 +18,7 @@ export function Layout(): JSX.Element {
 function LayoutInner(): JSX.Element {
   return (
     <div className='min-h-screen w-full flex'>
-      <div className={`shrink-0 border-r bg-white transition-all duration-200`}>
+      <div className={`shrink-0 border-r transition-all duration-200`}>
         <AppSidebar />
         <SidebarInset>
           <header className='flex h-16 shrink-0 items-center gap-2 px-4'>

@@ -68,8 +68,14 @@ export async function getLatestMonitorResults(orgId: string): Promise<MonitorWit
 }
 
 // Fetch monitoring results for a monitor
-export async function getMonitorResults(serviceId: string, monitorId: string): Promise<MonitorResult[]> {
-  const res = await axiosInstance.get(`/services/${serviceId}/monitors/${monitorId}/results`)
+export async function getMonitorResults(
+  serviceId: string,
+  monitorId: string,
+  limit?: number
+): Promise<MonitorResult[]> {
+  const res = await axiosInstance.get(`/services/${serviceId}/monitors/${monitorId}/results`, {
+    params: limit ? { limit } : undefined,
+  })
   return res.data
 }
 

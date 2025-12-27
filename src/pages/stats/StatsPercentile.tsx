@@ -16,9 +16,13 @@ export function MonitorStatsPercentiles({ stats, loading }: Props) {
   return (
     <div className='flex flex-wrap gap-4 mt-4'>
       {percentiles.map((p) => (
-        <div key={p} className='flex items-center gap-2 bg-muted p-3 rounded-md'>
+        <div
+          key={p}
+          className='flex items-center gap-2 bg-muted p-3 rounded-none'>
           <div className='text-sm text-muted-foreground'>{p}</div>
-          <div className='text-xl font-bold'>{stats?.[p.toLowerCase()] ?? '--'} ms</div>
+          <div className='text-xl font-bold'>
+            {stats?.[p.toLowerCase()] ?? '--'} ms
+          </div>
         </div>
       ))}
     </div>

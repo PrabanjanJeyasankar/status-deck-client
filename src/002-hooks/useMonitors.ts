@@ -105,10 +105,14 @@ export function useDeleteMonitor(serviceId: string, orgId: string, onSuccess?: (
 }
 
 // Hook to fetch monitor history
-export function useMonitorResults(serviceId: string, monitorId: string) {
+export function useMonitorResults(
+  serviceId: string,
+  monitorId: string,
+  limit?: number
+) {
   return useQuery<MonitorResult[]>({
-    queryKey: ['monitor-results', serviceId, monitorId],
-    queryFn: () => getMonitorResults(serviceId, monitorId),
+    queryKey: ['monitor-results', serviceId, monitorId, limit],
+    queryFn: () => getMonitorResults(serviceId, monitorId, limit),
     enabled: !!serviceId && !!monitorId,
     refetchOnWindowFocus: false,
   })

@@ -1,26 +1,45 @@
-import { useState } from 'react'
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { Info, AlertCircle } from 'lucide-react'
-import clsx from 'clsx'
 import type { ServiceStatus } from '@/types/serviceTypes'
-import { validateServiceForm } from '@/utils/serviceValidation'
 import { serviceStatusOptions } from '@/utils'
+import { validateServiceForm } from '@/utils/serviceValidation'
+import clsx from 'clsx'
+import { AlertCircle, Info } from 'lucide-react'
+import { useState } from 'react'
 
 interface ServiceCreateFormProps {
-  onCreate: (data: { name: string; status: ServiceStatus; description?: string }) => void
+  onCreate: (data: {
+    name: string
+    status: ServiceStatus
+    description?: string
+  }) => void
   onCancel?: () => void
 }
 
-export function ServiceCreateForm({ onCreate, onCancel }: ServiceCreateFormProps) {
-  const [form, setForm] = useState<{ name: string; status: ServiceStatus; description?: string }>({
+export function ServiceCreateForm({
+  onCreate,
+  onCancel,
+}: ServiceCreateFormProps) {
+  const [form, setForm] = useState<{
+    name: string
+    status: ServiceStatus
+    description?: string
+  }>({
     name: '',
     status: 'OPERATIONAL',
   })
-  const [errors, setErrors] = useState<Partial<Record<'name' | 'status', string>>>({})
+  const [errors, setErrors] = useState<
+    Partial<Record<'name' | 'status', string>>
+  >({})
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,7 +52,7 @@ export function ServiceCreateForm({ onCreate, onCancel }: ServiceCreateFormProps
 
   return (
     <form
-      className='flex flex-col gap-6  w-full bg-white border border-neutral-200 rounded-2xl p-8'
+      className='flex flex-col gap-6  w-full borderrounded-none p-8'
       onSubmit={handleSubmit}
       noValidate>
       <div>
@@ -41,7 +60,9 @@ export function ServiceCreateForm({ onCreate, onCancel }: ServiceCreateFormProps
           <Info className='w-5 h-5 text-primary' />
           Create Service
         </h2>
-        <p className='text-sm text-muted-foreground'>Fill in details to add a new service to your status page.</p>
+        <p className='text-sm text-muted-foreground'>
+          Fill in details to add a new service to your status page.
+        </p>
       </div>
       <div className='flex flex-col gap-1.5'>
         <Label htmlFor='name' className='font-medium'>
@@ -56,7 +77,10 @@ export function ServiceCreateForm({ onCreate, onCancel }: ServiceCreateFormProps
           }}
           placeholder='e.g. Main Website'
           required
-          className={clsx('text-base', errors.name && 'border-red-500 focus-visible:ring-red-500/50')}
+          className={clsx(
+            'text-base',
+            errors.name && 'border-red-500 focus-visible:ring-red-500/50'
+          )}
         />
         {errors.name && (
           <span className='text-xs text-red-600 flex items-center gap-1 mt-0.5'>
@@ -76,7 +100,10 @@ export function ServiceCreateForm({ onCreate, onCancel }: ServiceCreateFormProps
           }}>
           <SelectTrigger
             id='status'
-            className={clsx('w-full text-base', errors.status && 'border-red-500 focus-visible:ring-red-500/50')}>
+            className={clsx(
+              'w-full text-base',
+              errors.status && 'border-red-500 focus-visible:ring-red-500/50'
+            )}>
             <SelectValue placeholder='Select status' />
           </SelectTrigger>
           <SelectContent>

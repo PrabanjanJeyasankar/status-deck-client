@@ -1,12 +1,18 @@
-import { useState, useEffect, type FormEvent } from 'react'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import type { Service, ServiceStatus } from '@/types/serviceTypes'
 import { Textarea } from '@/components/ui/textarea'
+import type { Service, ServiceStatus } from '@/types/serviceTypes'
 import { statusColorMap } from '@/utils'
+import { useEffect, useState, type FormEvent } from 'react'
 
 export function ServiceEditDialog({
   open,
@@ -17,7 +23,11 @@ export function ServiceEditDialog({
   open: boolean
   onOpenChange: (open: boolean) => void
   service: Service
-  onSubmit: (payload: { name: string; status: ServiceStatus; description?: string }) => void
+  onSubmit: (payload: {
+    name: string
+    status: ServiceStatus
+    description?: string
+  }) => void
 }) {
   const [name, setName] = useState(service.name)
   const [status, setStatus] = useState<ServiceStatus>(service.status)
@@ -34,7 +44,11 @@ export function ServiceEditDialog({
   const handleSave = () => {
     const trimmed = name.trim()
     if (!trimmed) return
-    onSubmit({ name: trimmed, status, description: description.trim() || undefined })
+    onSubmit({
+      name: trimmed,
+      status,
+      description: description.trim() || undefined,
+    })
     onOpenChange(false)
   }
 
@@ -79,21 +93,31 @@ export function ServiceEditDialog({
               value={status}
               onValueChange={(val) => setStatus(val as ServiceStatus)}
               className='flex flex-wrap gap-3'>
-              {(Object.keys(statusColorMap) as ServiceStatus[]).map((status) => (
-                <div
-                  key={status}
-                  className={`flex items-center space-x-2 p-2 border rounded-md ${statusColorMap[status].text}/80 border-muted bg-muted/20`}>
-                  <RadioGroupItem value={status} id={`status-${status.toLowerCase()}`} />
-                  <Label htmlFor={`status-${status.toLowerCase()}`} className={statusColorMap[status].text}>
-                    {status}
-                  </Label>
-                </div>
-              ))}
+              {(Object.keys(statusColorMap) as ServiceStatus[]).map(
+                (status) => (
+                  <div
+                    key={status}
+                    className={`flex items-center space-x-2 p-2 border rounded-none ${statusColorMap[status].text}/80 border-muted bg-muted/20`}>
+                    <RadioGroupItem
+                      value={status}
+                      id={`status-${status.toLowerCase()}`}
+                    />
+                    <Label
+                      htmlFor={`status-${status.toLowerCase()}`}
+                      className={statusColorMap[status].text}>
+                      {status}
+                    </Label>
+                  </div>
+                )
+              )}
             </RadioGroup>
           </fieldset>
 
           <DialogFooter className='pt-2'>
-            <Button type='button' variant='secondary' onClick={() => onOpenChange(false)}>
+            <Button
+              type='button'
+              variant='secondary'
+              onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
             <Button type='submit' disabled={name.trim().length === 0}>

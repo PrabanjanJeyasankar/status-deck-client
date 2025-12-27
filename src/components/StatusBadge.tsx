@@ -1,15 +1,25 @@
 import type { ServiceStatus } from '@/types/serviceTypes'
-import { statusColorMap } from '@/utils'
+import { Badge } from '@/components/ui/badge'
+import { AlertTriangle, CheckCircle, Wrench, XCircle } from 'lucide-react'
 
 export function StatusBadge({ status }: { status: ServiceStatus }) {
-  const { bg, text, icon: Icon } = statusColorMap[status]
+  const config: Record<
+    ServiceStatus,
+    { icon: React.FC<{ className?: string }>; variant: 'success' | 'warning' | 'info' | 'destructive' }
+  > = {
+    OPERATIONAL: { icon: CheckCircle, variant: 'success' },
+    DEGRADED: { icon: AlertTriangle, variant: 'warning' },
+    MAINTENANCE: { icon: Wrench, variant: 'info' },
+    OUTAGE: { icon: XCircle, variant: 'destructive' },
+  }
+  const { icon: Icon, variant } = config[status]
 
   return (
-    <div className={`px-2 py-0.5 rounded-full text-xs font-medium w-fit ${bg} ${text}`}>
-      <div className='flex items-center gap-1'>
+    <Badge variant={variant}>
+      <span className='flex items-center gap-1'>
         <Icon className='w-3 h-3' />
         {status}
-      </div>
-    </div>
+      </span>
+    </Badge>
   )
 }
